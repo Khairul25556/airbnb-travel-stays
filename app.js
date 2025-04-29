@@ -6,6 +6,12 @@ const methodOverride = require("method-override");
 require("dotenv").config();
 const Listing = require("./models/listing.js");
 
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({extended: true}));
+app.use(methodOverride("_method"));
+
 //Database conection
 async function connection(){
     const name = process.env.DB_USER;
@@ -20,6 +26,69 @@ connection()
 
 app.get("/", (req, res) => {
     res.send("Server is working correctly");
+});
+
+//Index Route
+app.get("/listings", async (req, res) => {
+    const allListings = await Listing.find();
+    res.render("listings/index.ejs", {allListings});
+});
+
+//new Route
+app.get("/listings/new", (req, res) => {
+    res.render("listings/new.ejs");
+});
+
+//Create Route
+app.post("/listings", async(req,res) => {
+    //Normal way
+    // let {title, description, image, price, country, location} = req.body;
+    // let newList = new Listing ({
+    //     title: title,
+    //     description: description,
+    //     image: image,
+    //     price: price,
+    //     country: country,
+    //     location: location
+    // });
+    // console.log(newList);
+
+    //Advance way
+    // let listing = req.body.listing;
+    // const newListing = new Listing(listing);
+
+    //Advance way(shortcut)
+    const newListing = new Listing(req.body.listing);
+    await newListing.save();
+    res.redirect("/listings");
+});
+
+//Show Route
+app.get("/listings/:id", async (req, res) => {
+    let {id} = req.params;
+    const listing = await Listing.findById(id);
+    res.render("listings/show.ejs", {listing});
+});
+
+//Edit Route
+app.get("/listings/:id/edit", async(req, res) => {
+    let {id} = req.params;
+    const listing = await Listing.findById(id);
+    res.render("listings/edit.ejs", {listing});
+});
+
+//Update Route
+app.put("/listings/:id", async(req, res) => {
+    let {id} = req.params;
+    await Listing.findByIdAndUpdate(id, {...req.body.listing});
+    res.redirect(`/listings/${id}`);
+});
+
+//Delte Route
+app.delete("/listings/:id", async(req, res) => {
+    let {id} = req.params;
+    await Listing.findByIdAndDelete(id);
+    res.redirect("/listings");
 });
 
 //Testing
