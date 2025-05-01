@@ -12,7 +12,7 @@
         <br>
         <%=listing.description%>
         <br>
-        &#2547; <%=listing.price.toLocaleString("en-BD")%>
+        &#2547; <%= listing.price?.toLocaleString("en-BD") || "N/A" %>
         <br>
         <%=listing.location%>
         <br>
