@@ -43,7 +43,7 @@
     </form>
     <hr>
 
-    <p>All Reviews</p>
+    <p><b>All Reviews</b></p>
     <div class="row">
     <% for(let review of listing.reviews){ %>
     <div class="card col-5 ms-3 mb-3">
@@ -53,7 +53,7 @@
         <p class="card-text"><%=review.rating %> starts</p>
     </div>
     <form action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE" class="mb-3" method="POST">
-        <button class="btn btn-sm btn-dark">Delete</button>
+        <button class="btn btn-sm btn-dark" style="margin-left: 10px!important;">Delete</button>
     </form>
     </div>
     <% } %>
