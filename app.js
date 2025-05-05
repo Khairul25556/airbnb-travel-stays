@@ -8,6 +8,8 @@ const ejsMate = require('ejs-mate');
 const ExpressError = require("./utils/ExpressError.js");
 const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js");
+const session = require("express-session");
+const flash = require("connect-flash");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -28,13 +30,32 @@ connection()
 .then((res) => console.log("successfully connected MongoDB"))
 .catch((err) => console.log(err));
 
+//Express-session 
+const sessionData = {
+    secret: "mysupersecretcode",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        expires: Date.now() + 7 * 24 * 60 * 60 * 1000, //ms
+        maxAge:  7 * 24 * 60 * 60 * 1000,
+        httpOnly: true
+    }
+};
 
-
+//root
 app.get("/", (req, res) => {
     res.send("Server is working correctly");
 });
 
+app.use(session(sessionData));
+app.use(flash());
 
+//flash middleware
+app.use((req, res, next) => {
+    res.locals.successMsg = req.flash("success");
+    res.locals.errMsg = req.flash("error");
+    next();
+});
 
 //comming req from routes
 app.use("/listings", listings);
@@ -42,7 +63,7 @@ app.use("/listings", listings);
 //comming req from routes
 app.use("/listings/:id/reviews", reviews);
 
-
+//If page doesn't exists
 app.use((req, res, next) => {
     next(new ExpressError (404, "Page Not Found"));
 });

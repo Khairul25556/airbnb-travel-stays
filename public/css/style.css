@@ -14,6 +14,13 @@ body{
     background-color: #fff;
 }
 
+.navbar-collapse {
+    background-color: rgb(92, 85, 85);
+    padding: 1rem;
+    border-radius: 5px;
+}
+  
+
 .fa-compass{
     color: #fe424d;
     font-size: 2rem;
@@ -21,7 +28,16 @@ body{
 
 .nav-link{
     color: #222222 !important;
+    margin-right: 18px;
 }
+
+.nav-link:hover {
+    background-color: #e2b6b6; 
+    color: #000; 
+    border-radius: 10px;
+    transition: 0.3s ease;
+}
+
 
 /* footer */
 .f-info-links a{
