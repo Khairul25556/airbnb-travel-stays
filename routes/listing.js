@@ -4,6 +4,7 @@ const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const {listingSchema} = require("../schema.js");
 const Listing = require("../models/listing.js");
+const { isLoggedIn } = require("../middleware.js");
 
 // const functionName = (req, res, next) => {
     // logic
@@ -26,14 +27,14 @@ router.get("/", wrapAsync(async (req, res) => {
 }));
 
 //new Router
-router.get("/new", (req, res) => {
+router.get("/new", isLoggedIn,(req, res) => {
     res.render("listings/new.ejs");
 });
 
 //Show Router
 router.get("/:id", wrapAsync(async (req, res) => {
     let {id} = req.params;
-    const listing = await Listing.findById(id).populate("reviews");
+    const listing = await Listing.findById(id).populate("reviews").populate("owner");
     if(!listing){
         req.flash("error","Oops! No stays found");
         return res.redirect("/listings");
@@ -42,16 +43,17 @@ router.get("/:id", wrapAsync(async (req, res) => {
 }));
 
 //Create Router
-router.post("/", validateListing, wrapAsync(async(req, res, next) => {
+router.post("/", isLoggedIn, validateListing, wrapAsync(async(req, res, next) => {
     //Advance way(shortcut)   
     const newListing = new Listing(req.body.listing);
+    newListing.owner = req.user._id;
     await newListing.save();
     req.flash("success", "New list created successfully!");
     res.redirect("/listings");
 }));
 
 //Edit Router
-router.get("/:id/edit", wrapAsync(async(req, res) => {
+router.get("/:id/edit", isLoggedIn, wrapAsync(async(req, res) => {
     let {id} = req.params;
     const listing = await Listing.findById(id);
     if(!listing){
@@ -62,7 +64,7 @@ router.get("/:id/edit", wrapAsync(async(req, res) => {
 }));
 
 //Update Router
-router.put("/:id", validateListing, wrapAsync(async(req, res) => {
+router.put("/:id", isLoggedIn, validateListing, wrapAsync(async(req, res) => {
     let {id} = req.params;
     //Without the ..., like this: await Listing.findByIdAndUpdate(id, req.body.listing);
     //we used ... for: Take all key-value pairs from req.body.listing and spread them into a new object.(id wont be count)
@@ -72,7 +74,7 @@ router.put("/:id", validateListing, wrapAsync(async(req, res) => {
 }));
 
 //Delte Router
-router.delete("/:id", wrapAsync(async(req, res) => {
+router.delete("/:id", isLoggedIn, wrapAsync(async(req, res) => {
     let {id} = req.params;
     await Listing.findByIdAndDelete(id);
     req.flash("success", "List Deleted!");

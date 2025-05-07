@@ -60,16 +60,21 @@ app.use(passport.initialize());
 //It enables storing user info in the session across multiple HTTP requests
 app.use(passport.session());
 //use static authenticate method of model in LocalStrategy
+//Tells Passport to use User.authenticate() for checking username and password.
 passport.use(new LocalStrategy(User.authenticate()));
 // use static serialize and deserialize of model for passport session support
+//serializeUser = Tells Passport how to save the user info in the session (usually just the user ID).
 passport.serializeUser(User.serializeUser());
+//deserializeUser = Tells Passport how to get the full user info back from the session.
 passport.deserializeUser(User.deserializeUser());
 
 
-//flash middleware
+//middleware
 app.use((req, res, next) => {
+    //res.locals-A place to store variables to be used in views/templates.
     res.locals.successMsg = req.flash("success");
     res.locals.errMsg = req.flash("error");
+    res.locals.currUser = req.user;
     next();
 });
 

@@ -22,7 +22,11 @@ const listingSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: "Review"
         }
-    ]
+    ],
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    }
 });
 
 //mongoose middleware for listing (delete listings and reviews both)

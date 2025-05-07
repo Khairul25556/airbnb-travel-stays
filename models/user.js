@@ -7,9 +7,9 @@ const userSchema = new Schema({
         type: String,
         required: true
     }
-    //username, pass, hashing, salting will automatically create by passport-local-mongoose
 });
 
+//username, pass, hashing, salting will automatically create by passport-local-mongoose
 userSchema.plugin(passportLocalMongoose);
 
 //model

@@ -10,6 +10,16 @@
           <a class="nav-link" href="/listings">Discover Stays</a>
           <a class="nav-link" href="/listings/new">List Your Stay</a>
         </div>
+        <div class="navbar-nav ms-auto">
+          <% if(!currUser) {%>
+              <a class="nav-link" href="/signup">SignUp</a>
+              <a class="nav-link" href="/login">Log In</a>
+            <% } %>
+            <% if(currUser) {%>
+              <p class="nav-link"><strong><%=currUser.username %></strong></p>
+              <a class="nav-link" href="/logout">Logout</a>
+            <% } %>
+        </div>
       </div>
     </div>
   </nav>
