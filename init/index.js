@@ -3,7 +3,7 @@ const Listing = require("../models/listing.js");
 const initData = require("./data.js");
 require("dotenv").config();
 
-//Database conection
+//Database connection
 async function connection(){
     const name = process.env.DB_USER;
     const pass = process.env.DB_PASS;
