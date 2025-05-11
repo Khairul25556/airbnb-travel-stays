@@ -1,10 +1,27 @@
 const Listing = require("../models/listing");
 const fetch = require("node-fetch"); 
 
+
+// module.exports.index = async (req, res) => {
+//     const allListings = await Listing.find();
+//     res.render("listings/index.ejs", {allListings});
+// };
+
 module.exports.index = async (req, res) => {
-    const allListings = await Listing.find();
-    res.render("listings/index.ejs", {allListings});
+    const { country } = req.query;
+    let allListings;
+
+    if (country && country.trim() !== "") {
+        allListings = await Listing.find({ 
+            country: { $regex: new RegExp(country, "i") } 
+        });
+    } else {
+        allListings = await Listing.find();
+    }
+
+    res.render("listings/index.ejs", { allListings, country });
 };
+
 
 module.exports.renderNewForm = (req, res) => {
     res.render("listings/new.ejs");

@@ -48,9 +48,9 @@ const sessionData = {
 };
 
 //root
-app.get("/", (req, res) => {
-    res.send("Server is working correctly");
-});
+// app.get("/", (req, res) => {
+//     res.send("Server is working correctly");
+// });
 
 app.use(session(sessionData));
 app.use(flash());
